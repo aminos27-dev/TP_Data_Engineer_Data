@@ -66,3 +66,18 @@ print("Identifiants communs aux deux sources =", len(ids_en & ids_fr))
 print("\nDates de réservation")
 print("Fichier du 1er =", jour1["bookings"]["booking_date"].unique().tolist())
 print("Fichier du 2 =", jour2["bookings"]["booking_date"].unique().tolist())
+
+
+# Comparer l'état initial avec le premier export quotidien
+URL_INIT = "https://raw.githubusercontent.com/kevinl75/tp-polytech-dataset/main/init"
+
+for source, cle in CLES.items():
+    initial = pd.read_csv(f"{URL_INIT}/{source}.csv", dtype="string")
+
+    ids_init = set(initial[cle].dropna())
+    ids_j1 = set(jour1[source][cle].dropna())
+
+    print(f"\nComparaison init / 1er septembre pour {source}")
+    print("Identifiants communs =", len(ids_init & ids_j1))
+    print("Uniquement dans le fichier du 1er septembre =", len(ids_j1 - ids_init))
+    print("Uniquement dans le fichier initial =", len(ids_init - ids_j1))

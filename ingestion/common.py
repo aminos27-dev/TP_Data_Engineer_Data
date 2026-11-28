@@ -7,6 +7,8 @@ import os
 import duckdb
 import pandas as pd
 
+from urllib.request import urlretrieve
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BRONZE_DIR = os.path.join(BASE_DIR, "bronze")
 DB_PATH = os.path.join(BASE_DIR, "warehouse.duckdb")
@@ -19,7 +21,13 @@ def fetch_csv(subdir: str, filename: str) -> pd.DataFrame:
     # - S'il n'existe pas déjà en local dans BRONZE_DIR/<subdir>/<filename>, téléchargez-le et
     #   écrivez-le tel quel sur disque à cet emplacement (créez les dossiers nécessaires).
     # - Eviter si possible de le retéléchargez s'il est déjà présent.
-    raise NotImplementedError
+    chemin_local = os.path.join(BRONZE_DIR, subdir, filename)
+    if not os.path.isfile(chemin_local):
+        dossier_local = os.path.dirname(chemin_local)
+        os.makedirs(dossier_local, exist_ok=True)
+        url = f"{RAW_BASE}/{subdir}/{filename}"
+        urlretrieve(url, chemin_local)
+    return pd.read_csv(chemin_local)
 
 
 def get_connection() -> duckdb.DuckDBPyConnection:

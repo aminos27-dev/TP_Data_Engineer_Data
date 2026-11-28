@@ -27,7 +27,8 @@ def _snapshot_file(day: date = None, init: bool = False):
 def ingest_bronze(day: date = None, init: bool = False):
     # TODO : Doit télécharger le snapshot du jour vers bronze/ (ou vers init/).
     # utiliser fetch_csv() de common.py (à implémenter aussi) pour rapatrier la données.
-    raise NotImplementedError
+    subdir, filename = _snapshot_file(day, init)
+    fetch_csv(subdir, filename)
 
 
 def create_silver_table(con):
